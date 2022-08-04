@@ -25,7 +25,7 @@ class Fighter(BaseComponent):
         return self._hp
 
     @hp.setter
-    def hp(self, value:int) -> None:
+    def hp(self, value: int) -> None:
         self._hp = max(0, min(value, self.max_hp))
         if self._hp == 0 and self.parent.ai:
             self.die()
@@ -65,4 +65,3 @@ class Fighter(BaseComponent):
 
     def take_damage(self, amount: int) -> None:
         self.hp -= amount
-

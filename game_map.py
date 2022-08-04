@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Iterable, Iterator, Optional, TYPE_CHECKING
 
-import numpy as np # type: ignore
+import numpy as np  # type: ignore
 from tcod.console import Console
 
 from entity import Actor, Item
@@ -23,10 +23,10 @@ class GameMap:
 
         self.visible = np.full(
             (width, height), fill_value=False, order="F"
-        ) # Tiles the player can currently see
+        )  # Tiles the player can currently see
         self.explored = np.full(
             (width, height), fill_value=False, order="F"
-        ) # Tiles the player has seen before
+        )  # Tiles the player has seen before
 
     @property
     def gamemap(self) -> GameMap:
@@ -54,7 +54,7 @@ class GameMap:
                     and entity.x == location_x
                     and entity.y == location_y
             ):
-                return entity;
+                return entity
 
         return None
 
@@ -65,7 +65,7 @@ class GameMap:
 
         return None
 
-    def in_bounds(self, x: int, y:int) -> bool:
+    def in_bounds(self, x: int, y: int) -> bool:
         """Return True if x and y are inside the bounds of this map."""
         return 0 <= x < self.width and 0 <= y < self.height
 
@@ -77,7 +77,7 @@ class GameMap:
         If it isn't, but it's in the "explored" array, then draw it with the "dark" colors.
         Otherwise, the default is "SHROUD".
         """
-        console.tiles_rgb[0 : self.width, 0 : self.height] = np.select(
+        console.tiles_rgb[0: self.width, 0: self.height] = np.select(
             condlist=[self.visible, self.explored],
             choicelist=[self.tiles["light"], self.tiles["dark"]],
             default=tile_types.SHROUD,

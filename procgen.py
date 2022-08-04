@@ -12,6 +12,7 @@ import tile_types
 if TYPE_CHECKING:
     from engine import Engine
 
+
 class RectangularRoom:
     def __init__(self, x: int, y: int, width: int, height: int):
         self.x1 = x
@@ -52,7 +53,7 @@ def place_entities(
         y = random.randint(room.y1 + 1, room.y2 - 1)
 
         if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
-            if random.random() < 0.8: # 80% of the time
+            if random.random() < 0.8:  # 80% of the time
                 entity_factories.orc.spawn(dungeon, x, y)
             else:
                 entity_factories.troll.spawn(dungeon, x, y)
@@ -62,7 +63,16 @@ def place_entities(
         y = random.randint(room.y1 + 1, room.y2 - 1)
 
         if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
-            entity_factories.health_potion.spawn(dungeon, x, y)
+            item_chance = random.random()
+
+            if item_chance < 0.2:
+                entity_factories.health_potion.spawn(dungeon, x, y)
+            elif item_chance < 0.8:
+                entity_factories.fireball_scroll.spawn(dungeon, x, y)
+            elif item_chance < 0.9:
+                entity_factories.confusion_scroll.spawn(dungeon, x, y)
+            else:
+                entity_factories.lightning_scroll.spawn(dungeon, x, y)
 
 
 def tunnel_between(
@@ -71,7 +81,7 @@ def tunnel_between(
     """Return an L-shaped tunnel between these two points"""
     x1, y1 = start
     x2, y2 = end
-    if random.random() < 0.5: # 50% chance
+    if random.random() < 0.5:  # 50% chance
         # Move horizontally, then vertically.
         corner_x, corner_y = x2, y1
     else:
@@ -106,14 +116,14 @@ def generate_dungeon(
         room_height = random.randint(room_min_size, room_max_size)
 
         x = random.randint(0, dungeon.width - room_width - 1)
-        y = random.randint(0, dungeon.height - room_height -1)
+        y = random.randint(0, dungeon.height - room_height - 1)
 
         # "RectangularRoom" class makes rectangles easier to work with
         new_room = RectangularRoom(x, y, room_width, room_height)
 
         # Run through the other rooms and see if they intersect with this one.
         if any(new_room.intersects(other_room) for other_room in rooms):
-            continue # This room intersects, so go to the next attempt.
+            continue  # This room intersects, so go to the next attempt.
         # If there are no intersections this room is valid.
 
         # Dig out this room's inner area
@@ -122,7 +132,7 @@ def generate_dungeon(
         if len(rooms) == 0:
             # The first room, where the player starts.
             player.place(*new_room.center, dungeon)
-        else: # All rooms after the first.
+        else:  # All rooms after the first.
             # Dig out a tunnel between this room and the previous one.
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x, y] = tile_types.floor
