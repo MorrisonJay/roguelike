@@ -5,7 +5,7 @@ from typing import Tuple, TYPE_CHECKING
 import color
 
 if TYPE_CHECKING:
-    from tcod import Console
+    import tcod
     from engine import Engine
     from game_map import GameMap
 
@@ -22,7 +22,7 @@ def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
 
 
 def render_bar(
-        console: Console, current_value: int, maximum_value: int, total_width: int
+        console: tcod.console.Console, current_value: int, maximum_value: int, total_width: int
 ) -> None:
     bar_width = int(float(current_value) / maximum_value * total_width)
 
@@ -39,7 +39,7 @@ def render_bar(
 
 
 def render_dungeon_level(
-        console: Console, dungeon_level: int, location: Tuple[int, int]
+        console: tcod.console.Console, dungeon_level: int, location: Tuple[int, int]
 ) -> None:
     """Render the level the player is currently on, at the current location."""
     x, y = location
@@ -47,7 +47,7 @@ def render_dungeon_level(
     console.print(x=x, y=y, string=f"Dungeon level: {dungeon_level}")
 
 def render_names_at_mouse_location(
-        console: Console, x: int, y: int, engine: Engine
+        console: tcod.console.Console, x: int, y: int, engine: Engine
 ) -> None:
     mouse_x, mouse_y = engine.mouse_location
 

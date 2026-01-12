@@ -15,9 +15,10 @@ import entity_factories
 from game_map import GameWorld
 import input_handlers
 
+from PIL import Image
 
-# Load the background image and remove the alpha channel.
-background_image = tcod.image.load("menu_background.png")[:, :, :3]
+
+background_image = Image.open("menu_background.png")
 
 
 def new_game() -> Engine:
@@ -67,7 +68,7 @@ def load_game(filename: str) -> Engine:
 class MainMenu(input_handlers.BaseEventHandler):
     """Handle the main menu rendering and input."""
 
-    def on_render(self, console: tcod.Console) -> None:
+    def on_render(self, console: tcod.console.Console) -> None:
         """Render the main  menu on a background image."""
         console.draw_semigraphics(background_image, 0, 0)
 
@@ -76,14 +77,14 @@ class MainMenu(input_handlers.BaseEventHandler):
             console.height // 2 - 4,
             "THE TIME RIFT",
             fg=color.menu_title,
-            alignment=tcod.CENTER,
+            alignment=tcod.constants.CENTER,
         )
         console.print(
             console.width // 2,
             console.height - 2,
             "By Jay Morrison",
             fg=color.menu_title,
-            alignment=tcod.CENTER,
+            alignment=tcod.constants.CENTER,
         )
 
         menu_width = 24
@@ -96,16 +97,16 @@ class MainMenu(input_handlers.BaseEventHandler):
                 text.ljust(menu_width),
                 fg=color.menu_text,
                 bg=color.black,
-                alignment=tcod.CENTER,
-                bg_blend=tcod.BKGND_ALPHA(64),
+                alignment=tcod.constants.CENTER,
+                bg_blend=tcod.constants.BKGND_ALPH | (int(64 * 255) << 8)
             )
 
     def ev_keydown(
             self, event: tcod.event.KeyDown
     ) -> Optional[input_handlers.BaseEventHandler]:
-        if event.sym in (tcod.event.K_q, tcod.event.K_ESCAPE):
+        if event.sym in (tcod.event.KeySym.Q, tcod.event.KeySym.ESCAPE):
             raise SystemExit()
-        elif event.sym == tcod.event.K_c:
+        elif event.sym == tcod.event.KeySym.C:
             try:
                 return input_handlers.MainGameEventHandler(load_game("savegame.sav"))
             except FileNotFoundError:
@@ -113,7 +114,7 @@ class MainMenu(input_handlers.BaseEventHandler):
             except Exception as exc:
                 traceback.print_exc()  # Print to stderr.
                 return input_handlers.PopupMessage(self, f"Failed to load save:\n{exc}")
-        elif event.sym == tcod.event.K_n:
+        elif event.sym == tcod.event.KeySym.N:
             return input_handlers.MainGameEventHandler(new_game())
 
         return None

@@ -72,7 +72,7 @@ class Entity:
             gamemap.entities.add(self)
 
     def euclidean_distance(self, x: int, y: int) -> float:
-        """Return the euclidean distance between the current entity and the given (x, y) coordinate."""
+        """Return the Euclidean distance between the current entity and the given (x, y) coordinate."""
         return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
 
     def chebyshev_distance(self, x: int, y: int) -> float:
